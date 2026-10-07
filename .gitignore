@@ -1,0 +1,25 @@
+# Secrets and local config
+.env
+.env.local
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local indexes, databases and uploaded documents (may contain real company data)
+backend/data/
+storage/
+
+# Node
+node_modules/
+frontend/dist/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local assistant notes
+CLAUDE.md
