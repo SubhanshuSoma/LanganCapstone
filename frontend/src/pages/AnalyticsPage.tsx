@@ -27,7 +27,6 @@ export function AnalyticsPage() {
         <p>Agent usage and knowledge engagement.</p>
       </header>
 
-      <p className="demo-note">Demo data: figures are fictional and as of {fmt(DEMO_AS_OF)}, not live usage.</p>
 
       <div className="toolbar">
         <label>

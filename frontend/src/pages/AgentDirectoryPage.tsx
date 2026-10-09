@@ -38,8 +38,6 @@ export function AgentDirectoryPage() {
         <p>Find knowledge-capture agents built from the experience of seasoned professionals.</p>
       </header>
 
-      <p className="demo-note">Demo data: these agents are fictional examples, not live records.</p>
-
       <div className="toolbar">
         <input
           type="search"
