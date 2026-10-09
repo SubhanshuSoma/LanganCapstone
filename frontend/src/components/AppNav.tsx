@@ -1,8 +1,10 @@
-export type PageId = "chat" | "documents";
+﻿export type PageId = "chat" | "documents" | "agents" | "analytics";
 
 const PAGES: { id: PageId; label: string }[] = [
   { id: "chat", label: "Chat" },
   { id: "documents", label: "Documents" },
+  { id: "agents", label: "Agents" },
+  { id: "analytics", label: "Analytics" },
 ];
 
 interface Props {
@@ -25,3 +27,4 @@ export function AppNav({ current }: Props) {
     </nav>
   );
 }
+

@@ -1,0 +1,17 @@
+# Node / Vite
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
