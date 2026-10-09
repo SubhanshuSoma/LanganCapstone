@@ -72,6 +72,15 @@ the document row, and rerunning the same file retries a failed document.
 Stored vectors are deterministic fake embeddings for local
 pipeline testing and do not provide meaningful semantic search.
 
+The web app also has an **Employee files** tab. With PostgreSQL running, staff
+can upload supported files (up to 25 MB), assign an employee and optional
+project number, filter the file list, and download originals. Files attached
+in chat are indexed and included as context for that question. Chat history
+remains available while the page is open and resets after a reload.
+
 ## Status
 
-Milestone 1 (chat skeleton with streaming) is done. Next up: document ingestion (PDF, Word), retrieval, and answers with citations. Excel/CSV, email, PowerPoint and AutoCAD DWG follow. Use only synthetic data in `sample-data/synthetic/`. Real company documents stay out of the repo.
+General retrieval across the document library is still pending. The chat can
+read documents attached to the current question, but it does not yet search
+the entire library automatically. Use only synthetic data in
+`sample-data/synthetic/`. Real company documents stay out of the repo.

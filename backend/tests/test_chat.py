@@ -39,3 +39,29 @@ def test_chat_rejects_empty_conversation(make_client):
     resp = make_client(FakeLLM()).post("/api/chat", json={"messages": []})
 
     assert resp.status_code == 422
+
+
+def test_chat_includes_attached_document_text(make_client, monkeypatch):
+    class Connection:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            return None
+
+        def execute(self, _query, params):
+            assert params == ([7],)
+            return self
+
+        def fetchall(self):
+            return [("report.txt", "Foundation", "Driven piles were used.")]
+
+    monkeypatch.setattr("app.api.routes.chat.psycopg.connect", lambda *_: Connection())
+    llm = FakeLLM(tokens=["The report describes driven piles."])
+    resp = make_client(llm).post("/api/chat", json={
+        "messages": [{"role": "user", "content": "What foundation was used?"}],
+        "document_ids": [7],
+    })
+    assert resp.status_code == 200
+    assert "report.txt" in llm.received[1]["content"]
+    assert "Driven piles were used." in llm.received[1]["content"]

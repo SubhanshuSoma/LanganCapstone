@@ -1,4 +1,5 @@
 import type { DocumentRecord } from "../types";
+import { documentDownloadUrl } from "../api/documents";
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -13,10 +14,12 @@ interface Props {
 
 export function DocumentTable({ documents, onDelete }: Props) {
   return (
-    <table className="doc-table">
+    <div className="doc-table-wrap"><table className="doc-table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Filename</th>
+          <th>Employee</th>
+          <th>Project</th>
           <th>Size</th>
           <th>Status</th>
           <th>Uploaded</th>
@@ -26,7 +29,9 @@ export function DocumentTable({ documents, onDelete }: Props) {
       <tbody>
         {documents.map((doc) => (
           <tr key={doc.id}>
-            <td>{doc.filename}</td>
+            <td><a className="filename-link" href={documentDownloadUrl(doc.id)} title={`Download ${doc.filename}`}>{doc.filename}</a></td>
+            <td>{doc.employee || "—"}</td>
+            <td>{doc.project || "—"}</td>
             <td>{formatSize(doc.size_bytes)}</td>
             <td>
               <span className={`status status--${doc.status}`} title={doc.error ?? undefined}>
@@ -42,6 +47,6 @@ export function DocumentTable({ documents, onDelete }: Props) {
           </tr>
         ))}
       </tbody>
-    </table>
+    </table></div>
   );
 }

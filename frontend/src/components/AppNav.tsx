@@ -1,27 +1,29 @@
 export type PageId = "chat" | "documents";
 
-const PAGES: { id: PageId; label: string }[] = [
-  { id: "chat", label: "Chat" },
-  { id: "documents", label: "Documents" },
-];
-
 interface Props {
   current: PageId;
+  onNewChat: () => void;
+  chats: { id: number; title: string }[];
+  activeChat: number;
+  onSelectChat: (id: number) => void;
 }
 
-export function AppNav({ current }: Props) {
+export function AppNav({ current, onNewChat, chats, activeChat, onSelectChat }: Props) {
   return (
-    <nav className="app-nav">
-      <span className="app-nav__brand">Langan Knowledge Bot</span>
-      <ul>
-        {PAGES.map((page) => (
-          <li key={page.id}>
-            <a href={`#/${page.id}`} aria-current={page.id === current ? "page" : undefined}>
-              {page.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <aside className="app-nav">
+      <a className="app-nav__brand" href="#/chat" aria-label="Langan Knowledge home">
+        <img src="/langan-logo.png" alt="Langan" />
+        <span className="brand-subtitle">KNOWLEDGE</span>
+      </a>
+      <button type="button" className="new-chat" onClick={onNewChat}><span aria-hidden="true">＋</span> New chat</button>
+      <div className="nav-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <a href="#/chat" aria-current={current === "chat" ? "page" : undefined}><span aria-hidden="true">◫</span> Chat</a>
+        <a href="#/documents" aria-current={current === "documents" ? "page" : undefined}><span aria-hidden="true">▤</span> Employee files</a>
+      </nav>
+      <div className="nav-label nav-label--recent">RECENT CHATS</div>
+      <div className="recent-chats">{chats.filter((chat) => chat.title).map((chat) => <button key={chat.id} type="button" aria-current={current === "chat" && chat.id === activeChat ? "page" : undefined} onClick={() => onSelectChat(chat.id)} title={chat.title}>{chat.title}</button>)}</div>
+      <div className="app-nav__footer"><span className="footer-dot" /> Internal knowledge assistant</div>
+    </aside>
   );
 }

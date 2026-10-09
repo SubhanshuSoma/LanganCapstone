@@ -27,14 +27,16 @@ export function useDocuments() {
   }, [refresh]);
 
   const upload = useCallback(
-    async (files: File[]) => {
+    async (files: File[], employeeName: string, projectNo: string) => {
       setIsUploading(true);
       setError(null);
       try {
         // One request per file so a single bad file does not block the rest.
-        for (const file of files) await uploadDocument(file);
+        for (const file of files) await uploadDocument(file, employeeName, projectNo);
+        return true;
       } catch (err) {
         setError(message(err));
+        return false;
       } finally {
         setIsUploading(false);
         await refresh();

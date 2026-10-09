@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppNav, type PageId } from "./components/AppNav";
 import { ChatPage } from "./pages/ChatPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
@@ -8,6 +8,9 @@ const pageFromHash = (): PageId => (window.location.hash === "#/documents" ? "do
 
 export default function App() {
   const [page, setPage] = useState<PageId>(pageFromHash);
+  const [chats, setChats] = useState([{ id: 0, title: "" }]);
+  const [activeChat, setActiveChat] = useState(0);
+  const nextChatId = useRef(0);
 
   useEffect(() => {
     const onHashChange = () => setPage(pageFromHash());
@@ -16,9 +19,13 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      <AppNav current={page} />
-      {page === "documents" ? <DocumentsPage /> : <ChatPage />}
-    </>
+    <div className="app-shell">
+      <AppNav current={page} chats={chats} activeChat={activeChat} onNewChat={() => { const id = ++nextChatId.current; setChats((current) => [{ id, title: "" }, ...current]); setActiveChat(id); window.location.hash = "#/chat"; setPage("chat"); }} onSelectChat={(id) => { setActiveChat(id); window.location.hash = "#/chat"; setPage("chat"); }} />
+      <div className="app-shell__main">
+        <div className="topbar"><span>{page === "chat" ? "Chat" : "Employee files"}</span><span className="topbar__right">LANGAN / KNOWLEDGE</span></div>
+        {chats.map((chat) => <div key={chat.id} hidden={page !== "chat" || chat.id !== activeChat} className="chat-host"><ChatPage onTitle={(title) => setChats((current) => current.map((entry) => entry.id === chat.id ? { ...entry, title } : entry))} /></div>)}
+        {page === "documents" && <DocumentsPage />}
+      </div>
+    </div>
   );
 }

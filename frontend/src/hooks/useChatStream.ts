@@ -9,11 +9,11 @@ export function useChatStream() {
   const abortRef = useRef<AbortController | null>(null);
 
   const send = useCallback(
-    async (text: string) => {
+    async (text: string, documentIds: string[] = [], attachmentNames: string[] = []) => {
       const question = text.trim();
       if (!question || isStreaming) return;
 
-      const history: ChatMessage[] = [...messages, { role: "user", content: question }];
+      const history: ChatMessage[] = [...messages, { role: "user", content: question, attachments: attachmentNames }];
       // The empty assistant message is filled in as tokens arrive.
       setMessages([...history, { role: "assistant", content: "" }]);
       setError(null);
@@ -35,6 +35,7 @@ export function useChatStream() {
             else if (event.type === "error") setError(event.message);
           },
           controller.signal,
+          documentIds,
         );
       } catch (err) {
         if (!controller.signal.aborted) {

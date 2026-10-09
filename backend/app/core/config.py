@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     embed_model: str = "nomic-embed-text"
     llm_timeout_seconds: float = 120.0
     cors_origins: list[str] = ["http://localhost:5173"]
+    database_url: str = "postgresql://langan:langan_local_only@localhost:5432/langan_test"
+    storage_root: str = "data"
 
 
 @lru_cache
