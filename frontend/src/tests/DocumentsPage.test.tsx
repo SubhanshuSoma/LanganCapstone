@@ -37,16 +37,42 @@ describe("DocumentsPage", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(<DocumentsPage />);
-    expect(await screen.findByText("No documents yet.")).toBeInTheDocument();
+    expect(await screen.findByText(/No documents yet/)).toBeInTheDocument();
 
     const file = new File(["%PDF"], "site-report.pdf", { type: "application/pdf" });
     await userEvent.upload(screen.getByLabelText("Upload documents"), file);
+    await userEvent.type(screen.getByPlaceholderText("Employee name"), "Morgan Lee");
+    await userEvent.click(screen.getByRole("button", { name: "Upload 1 file" }));
 
     expect(await screen.findByText("site-report.pdf")).toBeInTheDocument();
     const [url, init] = fetchMock.mock.calls[1];
     expect(url).toMatch(/\/api\/documents$/);
     expect(init.method).toBe("POST");
     expect((init.body as FormData).get("file")).toBe(file);
+    expect((init.body as FormData).get("employee_name")).toBe("Morgan Lee");
+  });
+
+  it("uploads a ZIP and shows how many documents were processed", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(json([]))
+      .mockResolvedValueOnce(json({ documents: [doc], skipped: ["photo.jpg"] }, 201))
+      .mockResolvedValueOnce(json([doc]));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<DocumentsPage />);
+    expect(await screen.findByText(/No documents yet/)).toBeInTheDocument();
+
+    const file = new File(["ZIP bytes"], "employee-files.zip", { type: "application/zip" });
+    await userEvent.upload(screen.getByLabelText("Upload documents"), file);
+    await userEvent.type(screen.getByPlaceholderText("Employee name"), "Morgan Lee");
+    await userEvent.click(screen.getByRole("button", { name: "Upload 1 file" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("Processed 1 document; skipped 1 unsupported or empty file.");
+    const [url, init] = fetchMock.mock.calls[1];
+    expect(url).toMatch(/\/api\/documents\/archive$/);
+    expect((init.body as FormData).get("file")).toBe(file);
+    expect((init.body as FormData).get("employee_name")).toBe("Morgan Lee");
   });
 
   it("shows the server's error detail", async () => {
@@ -55,5 +81,19 @@ describe("DocumentsPage", () => {
     render(<DocumentsPage />);
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Not Found");
+  });
+
+  it("filters filenames by employee and project", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json([
+      { ...doc, id: "1", employee: "Morgan Lee", project: "P-12" },
+      { ...doc, id: "2", filename: "bridge-notes.pdf", employee: "Alex Kim", project: "P-20" },
+    ])));
+    render(<DocumentsPage />);
+    expect(await screen.findByText("bridge-notes.pdf")).toBeInTheDocument();
+    await userEvent.selectOptions(screen.getByLabelText("Filter by employee"), "Morgan Lee");
+    expect(screen.getByText("site-report.pdf")).toBeInTheDocument();
+    expect(screen.queryByText("bridge-notes.pdf")).not.toBeInTheDocument();
+    await userEvent.selectOptions(screen.getByLabelText("Filter by project"), "P-20");
+    expect(screen.getByText("No files match these filters.")).toBeInTheDocument();
   });
 });

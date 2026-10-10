@@ -2,20 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import add_scalar_reference
 
-from app.api.router import api_router
+from app.api.routes import chat, documents, health
 from app.core.config import get_settings
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
-
-    app = FastAPI(
-        title=settings.app_name,
-        version=settings.app_version,
-        debug=settings.debug,
-    )
-
-    # lets the vite frontend call us from the browser
+    app = FastAPI(title="LANGAN LEGACY", version=settings.app_version, debug=settings.debug)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
@@ -23,11 +16,9 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # everything lives under /api
-    app.include_router(api_router, prefix=settings.api_prefix)
-
-    # api docs at /scalar
+    app.include_router(health.router)
+    app.include_router(chat.router)
+    app.include_router(documents.router)
     add_scalar_reference(app)
 
     @app.get("/", include_in_schema=False)

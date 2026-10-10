@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { deleteDocument, listDocuments, uploadDocument } from "../api/documents";
+import { deleteDocument, listDocuments, uploadArchive, uploadDocument } from "../api/documents";
 import type { DocumentRecord } from "../types";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
@@ -9,6 +9,7 @@ export function useDocuments() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadSummary, setUploadSummary] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setIsLoading(true);
@@ -27,17 +28,37 @@ export function useDocuments() {
   }, [refresh]);
 
   const upload = useCallback(
-    async (files: File[]) => {
+    async (files: File[], employeeName: string, projectNo: string) => {
       setIsUploading(true);
       setError(null);
+      setUploadSummary(null);
+      let uploadError: string | null = null;
       try {
-        // One request per file so a single bad file does not block the rest.
-        for (const file of files) await uploadDocument(file);
+        let imported = 0;
+        let skipped = 0;
+        const failed: string[] = [];
+        for (const file of files) {
+          if (file.name.toLowerCase().endsWith(".zip")) {
+            const result = await uploadArchive(file, employeeName, projectNo);
+            imported += result.documents.filter((document) => document.status !== "failed").length;
+            failed.push(...result.documents.filter((document) => document.status === "failed").map((document) => document.filename));
+            skipped += result.skipped.length;
+          } else {
+            const document = await uploadDocument(file, employeeName, projectNo);
+            if (document.status === "failed") failed.push(document.filename);
+            else imported++;
+          }
+        }
+        setUploadSummary(`Processed ${imported} ${imported === 1 ? "document" : "documents"}${skipped ? `; skipped ${skipped} unsupported or empty ${skipped === 1 ? "file" : "files"}` : ""}.`);
+        if (failed.length) throw new Error(`Could not process: ${failed.join(", ")}`);
+        return true;
       } catch (err) {
-        setError(message(err));
+        uploadError = message(err);
+        return false;
       } finally {
         setIsUploading(false);
         await refresh();
+        if (uploadError) setError(uploadError);
       }
     },
     [refresh],
@@ -52,5 +73,5 @@ export function useDocuments() {
     }
   }, []);
 
-  return { documents, isLoading, isUploading, error, refresh, upload, remove };
+  return { documents, isLoading, isUploading, error, uploadSummary, refresh, upload, remove };
 }

@@ -1,17 +1,31 @@
-# Node / Vite
-node_modules/
-dist/
+# Secrets and local config
+.env
+.env.local
 
 # Python
+.venv/
 __pycache__/
-*.py[cod]
+*.pyc
 .pytest_cache/
+
+# Local indexes, databases and uploaded documents (may contain real company data)
+backend/data/
+storage/
+
+# Node
+node_modules/
+frontend/dist/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local assistant notes
+CLAUDE.md
+
+# Additional build and tool caches from dev
+dist/
 .ruff_cache/
 .mypy_cache/
-.venv/
 venv/
-
-# Local environment files
-.env
-.env.*
-!.env.example

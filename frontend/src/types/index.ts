@@ -3,6 +3,7 @@ export type ChatRole = "user" | "assistant";
 export interface ChatMessage {
   role: ChatRole;
   content: string;
+  attachments?: string[];
 }
 
 /** Events streamed by POST /api/chat (see backend/app/services/chat.py). */
@@ -21,6 +22,9 @@ export interface DocumentRecord {
   status: DocumentStatus;
   uploaded_at: string;
   error?: string | null;
+  employee_id?: string;
+  employee?: string;
+  project?: string | null;
 }
 
 /** A knowledge-capture persona built from one experienced professional's work. */

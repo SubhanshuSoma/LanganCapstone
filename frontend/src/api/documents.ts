@@ -20,11 +20,31 @@ export async function listDocuments(): Promise<DocumentRecord[]> {
   return resp.json();
 }
 
-export async function uploadDocument(file: File): Promise<DocumentRecord> {
+export async function uploadDocument(file: File, employeeName: string, projectNo: string): Promise<DocumentRecord> {
   const form = new FormData();
   form.append("file", file);
+  form.append("employee_name", employeeName);
+  form.append("project_no", projectNo);
   const resp = await check(await fetch(`${API_URL}/api/documents`, { method: "POST", body: form }));
   return resp.json();
+}
+
+export interface ArchiveUploadResult {
+  documents: DocumentRecord[];
+  skipped: string[];
+}
+
+export async function uploadArchive(file: File, employeeName: string, projectNo: string): Promise<ArchiveUploadResult> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("employee_name", employeeName);
+  form.append("project_no", projectNo);
+  const resp = await check(await fetch(`${API_URL}/api/documents/archive`, { method: "POST", body: form }));
+  return resp.json();
+}
+
+export function documentDownloadUrl(id: string): string {
+  return `${API_URL}/api/documents/${encodeURIComponent(id)}/download`;
 }
 
 export async function deleteDocument(id: string): Promise<void> {

@@ -1,9 +1,18 @@
-from fastapi.testclient import TestClient
-
 from app.core.config import get_settings
 
+from tests.conftest import FakeLLM
 
-def test_health_returns_ok(client: TestClient) -> None:
+
+def test_health_reports_llm_status(make_client):
+    resp = make_client(FakeLLM()).get("/api/health")
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "ok"
+    assert resp.json()["llm_available"] is True
+    assert resp.json()["chat_model"] == "fake-model"
+
+
+def test_health_returns_ok(client) -> None:
     response = client.get("/api/health")
 
     assert response.status_code == 200
@@ -12,14 +21,14 @@ def test_health_returns_ok(client: TestClient) -> None:
     assert body["app"] == get_settings().app_name
 
 
-def test_unknown_route_returns_404(client: TestClient) -> None:
+def test_unknown_route_returns_404(client) -> None:
     response = client.get("/api/does-not-exist")
 
     assert response.status_code == 404
 
 
 # browser preflight from the frontend should be allowed
-def test_cors_allows_frontend_origin(client: TestClient) -> None:
+def test_cors_allows_frontend_origin(client) -> None:
     response = client.options(
         "/api/health",
         headers={

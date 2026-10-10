@@ -7,11 +7,12 @@ export async function streamChat(
   messages: ChatMessage[],
   onEvent: (event: StreamEvent) => void,
   signal?: AbortSignal,
+  documentIds: string[] = [],
 ): Promise<void> {
   const resp = await fetch(`${API_URL}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages: messages.map(({ role, content }) => ({ role, content })), ...(documentIds.length ? { document_ids: documentIds.map(Number) } : {}) }),
     signal,
   });
   if (!resp.ok || !resp.body) {
