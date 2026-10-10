@@ -22,3 +22,27 @@ export interface DocumentRecord {
   uploaded_at: string;
   error?: string | null;
 }
+
+/** A knowledge-capture persona built from one experienced professional's work. */
+export interface Agent {
+  id: string;
+  name: string;
+  professional: string;
+  discipline: string;
+  role: string;
+  expertise: string[];
+  description: string;
+}
+
+export interface DemoDocument {
+  id: string;
+  agentId: string;
+  addedOn: string; // YYYY-MM-DD
+}
+
+/** Conversations started with one agent on one day. */
+export interface DailyUsage {
+  date: string; // YYYY-MM-DD
+  agentId: string;
+  conversations: number;
+}
