@@ -73,9 +73,13 @@ Stored vectors are deterministic fake embeddings for local
 pipeline testing and do not provide meaningful semantic search.
 
 The web app also has an **Employee files** tab. With PostgreSQL running, staff
-can upload supported files (up to 25 MB), assign an employee and optional
-project number, filter the file list, and download originals. Files attached
-in chat are indexed and included as context for that question. Chat history
+can upload supported files (up to 25 MB each) or a ZIP archive (up to 100 MB),
+assign an employee and optional project number, filter the file list, and
+download originals. A ZIP can contain up to 1,000 files and 500 MB of expanded
+content; supported documents inside it are imported individually under the
+employee entered on the form. Unsupported or empty entries are skipped and
+reported after upload. Files attached in chat are indexed and included as
+context for that question. Chat history
 remains available while the page is open and resets after a reload.
 
 ## Status

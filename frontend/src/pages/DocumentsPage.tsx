@@ -3,7 +3,7 @@ import { DocumentUpload } from "../components/DocumentUpload";
 import { useDocuments } from "../hooks/useDocuments";
 
 export function DocumentsPage() {
-  const { documents, isLoading, isUploading, error, refresh, upload, remove } = useDocuments();
+  const { documents, isLoading, isUploading, error, uploadSummary, refresh, upload, remove } = useDocuments();
   const [query, setQuery] = useState("");
   const [employee, setEmployee] = useState("");
   const [project, setProject] = useState("");
@@ -24,6 +24,8 @@ export function DocumentsPage() {
       </header>
 
       <DocumentUpload isUploading={isUploading} onUpload={upload} />
+
+      {uploadSummary && <p className="page__muted" role="status">{uploadSummary}</p>}
 
       {error && (
         <p className="page__error" role="alert">

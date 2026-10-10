@@ -1,7 +1,7 @@
 import { useRef, useState, type DragEvent } from "react";
 
-// Formats the ingestion pipeline is meant to handle (see CLAUDE.md).
 export const ACCEPTED_TYPES = ".pdf,.docx,.txt,.md,.xlsx,.csv,.eml";
+const ARCHIVE_ACCEPTED_TYPES = `${ACCEPTED_TYPES},.zip`;
 
 interface Props {
   isUploading: boolean;
@@ -47,14 +47,14 @@ export function DocumentUpload({ isUploading, onUpload }: Props) {
         type="file"
         multiple
         hidden
-        accept={ACCEPTED_TYPES}
+        accept={ARCHIVE_ACCEPTED_TYPES}
         aria-label="Upload documents"
         onChange={(e) => {
           handleFiles(e.target.files);
           e.target.value = "";
         }}
       />
-      <p className="upload__hint">PDF, Word, text, Markdown, Excel, CSV, or email · up to 25 MB each</p>
+      <p className="upload__hint">PDF, Word, text, Markdown, Excel, CSV, email, or ZIP · 25 MB per document; ZIP up to 100 MB</p>
       {files.length > 0 && (
         <div className="upload__details">
           <p>{files.map((file) => file.name).join(", ")}</p>

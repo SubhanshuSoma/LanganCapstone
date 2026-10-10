@@ -52,6 +52,29 @@ describe("DocumentsPage", () => {
     expect((init.body as FormData).get("employee_name")).toBe("Morgan Lee");
   });
 
+  it("uploads a ZIP and shows how many documents were processed", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(json([]))
+      .mockResolvedValueOnce(json({ documents: [doc], skipped: ["photo.jpg"] }, 201))
+      .mockResolvedValueOnce(json([doc]));
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<DocumentsPage />);
+    expect(await screen.findByText(/No documents yet/)).toBeInTheDocument();
+
+    const file = new File(["ZIP bytes"], "employee-files.zip", { type: "application/zip" });
+    await userEvent.upload(screen.getByLabelText("Upload documents"), file);
+    await userEvent.type(screen.getByPlaceholderText("Employee name"), "Morgan Lee");
+    await userEvent.click(screen.getByRole("button", { name: "Upload 1 file" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("Processed 1 document; skipped 1 unsupported or empty file.");
+    const [url, init] = fetchMock.mock.calls[1];
+    expect(url).toMatch(/\/api\/documents\/archive$/);
+    expect((init.body as FormData).get("file")).toBe(file);
+    expect((init.body as FormData).get("employee_name")).toBe("Morgan Lee");
+  });
+
   it("shows the server's error detail", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json({ detail: "Not Found" }, 404)));
 
