@@ -6,7 +6,11 @@ import { ChatPage } from "./pages/ChatPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
 
 // Hash routing keeps this dependency-free; swap for react-router if pages multiply.
-const pageFromHash = (): PageId => (window.location.hash === "#/documents" ? "documents" : "chat");
+const PAGE_IDS: PageId[] = ["chat", "documents", "agents", "analytics"];
+const pageFromHash = (): PageId => {
+  const id = window.location.hash.replace("#/", "") as PageId;
+  return PAGE_IDS.includes(id) ? id : "chat";
+};
 
 export default function App() {
   const [page, setPage] = useState<PageId>(pageFromHash);
