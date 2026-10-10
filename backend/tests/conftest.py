@@ -1,4 +1,5 @@
 import json
+from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
@@ -40,3 +41,9 @@ def make_client():
 
 def parse_sse(body: str) -> list[dict]:
     return [json.loads(block.removeprefix("data: ")) for block in body.split("\n\n") if block]
+
+
+@pytest.fixture
+def client() -> Iterator[TestClient]:
+    with TestClient(app) as test_client:
+        yield test_client

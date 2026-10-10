@@ -23,3 +23,9 @@ frontend/dist/
 
 # Local assistant notes
 CLAUDE.md
+
+# Additional build and tool caches from dev
+dist/
+.ruff_cache/
+.mypy_cache/
+venv/
