@@ -11,9 +11,9 @@ interface Props {
 export function AppNav({ current, onNewChat, chats, activeChat, onSelectChat }: Props) {
   return (
     <aside className="app-nav">
-      <a className="app-nav__brand" href="#/chat" aria-label="Langan Knowledge home">
+      <a className="app-nav__brand" href="#/chat" aria-label="Langan Legacy home">
         <img src="/langan-logo.png" alt="Langan" />
-        <span className="brand-subtitle">KNOWLEDGE</span>
+        <span className="brand-subtitle">LEGACY</span>
       </a>
       <button type="button" className="new-chat" onClick={onNewChat}><span aria-hidden="true">＋</span> New chat</button>
       <div className="nav-label">WORKSPACE</div>

@@ -24,7 +24,7 @@ export default function App() {
     <div className="app-shell">
       <AppNav current={page} chats={chats} activeChat={activeChat} onNewChat={() => { const id = ++nextChatId.current; setChats((current) => [{ id, title: "" }, ...current]); setActiveChat(id); window.location.hash = "#/chat"; setPage("chat"); }} onSelectChat={(id) => { setActiveChat(id); window.location.hash = "#/chat"; setPage("chat"); }} />
       <div className="app-shell__main">
-        <div className="topbar"><span>{({ chat: "Chat", documents: "Employee files", agents: "Agents", analytics: "Analytics" })[page]}</span><span className="topbar__right">LANGAN / KNOWLEDGE</span></div>
+        <div className="topbar"><span>{({ chat: "Chat", documents: "Employee files", agents: "Agents", analytics: "Analytics" })[page]}</span><span className="topbar__right">LANGAN LEGACY</span></div>
         {chats.map((chat) => <div key={chat.id} hidden={page !== "chat" || chat.id !== activeChat} className="chat-host"><ChatPage onTitle={(title) => setChats((current) => current.map((entry) => entry.id === chat.id ? { ...entry, title } : entry))} /></div>)}
         {page === "documents" && <DocumentsPage />}
         {page === "agents" && <AgentDirectoryPage />}

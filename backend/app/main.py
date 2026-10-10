@@ -8,7 +8,7 @@ from app.core.config import get_settings
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title=settings.app_name, version=settings.app_version, debug=settings.debug)
+    app = FastAPI(title="LANGAN LEGACY", version=settings.app_version, debug=settings.debug)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

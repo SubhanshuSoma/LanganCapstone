@@ -40,7 +40,7 @@ export function ChatPage({ onTitle }: { onTitle?: (title: string) => void }) {
   return (
     <main className="chat-page">
       {messages.length === 0 ? (
-        <div className="chat-page__empty"><div className="assistant-symbol">✳</div><div className="eyebrow">LANGAN KNOWLEDGE ASSISTANT</div><h1>How can I help?</h1><p>Ask a question, or attach employee documents to discuss their contents.</p><div className="prompt-suggestions"><button type="button" onClick={() => send("What can you help me with?")}>What can you help me with? <span>↗</span></button><button type="button" onClick={() => send("How can I analyze an employee file here?")}>Analyze an employee file <span>↗</span></button></div></div>
+        <div className="chat-page__empty"><div className="assistant-symbol">✳</div><div className="eyebrow">LANGAN LEGACY</div><h1>How can I help?</h1><p>Ask a question, or attach employee documents to discuss their contents.</p><div className="prompt-suggestions"><button type="button" onClick={() => send("What can you help me with?")}>What can you help me with? <span>↗</span></button><button type="button" onClick={() => send("How can I analyze an employee file here?")}>Analyze an employee file <span>↗</span></button></div></div>
       ) : (
         <MessageList messages={messages} />
       )}

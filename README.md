@@ -1,4 +1,4 @@
-# Langan Knowledge Bot
+# LANGAN LEGACY
 
 A chatbot that helps Langan staff find knowledge from the documents retired employees produced over their careers. It uses retrieval-augmented generation (RAG): documents are indexed, the most relevant passages are retrieved for each question, and a local model answers from those passages with citations. The model itself is not trained on the documents.
 
